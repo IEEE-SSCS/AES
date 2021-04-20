@@ -58,6 +58,9 @@ always_comb
 begin
 word_rnd_out[0] = word_rnd_in[0] ^ (rcon_o^Sub_i);
 word_rnd_out[1] = word_rnd_in[1] ^ word_rnd_out[0];
+word_rnd_out[2] = word_rnd_in[2] ^ word_rnd_out[1];
+word_rnd_out[3] = word_rnd_in[3] ^ word_rnd_out[2];
+
 end
 
 always @(posedge clk, negedge nrst)
