@@ -4,7 +4,7 @@ module aes_key_gen
 
 input logic clk,nrst ,en ,gen_key,next_rnd,
 input logic [9:0] r_con_ctrl,rcon_i,
-input [0:3][31:0] key_i,
+input logic [0:3][31:0] key_i,
 input logic [31:0] Sub_i,
 output logic [31:0] Sub_o,
 output logic [0:3][31:0] key_o
