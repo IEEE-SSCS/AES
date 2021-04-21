@@ -25,7 +25,16 @@ assign rcon_o  = gen_key ? r_con_ctrl : rcon_i;
 //secound mux so we will use it's out
 assign key_round  = next_rnd ? key_o : key_i;
 
-always @(posedge clk, negedge nrst)
+/* key_gen pipeline*/
+  aes_pipeline key_gen_pipe_1 (
+    .clk(clk),
+    .nrst(nrst),
+    .en(en),
+    .input_i(key_round),
+    .output_o(word_rnd_in)
+);
+
+/*always @(posedge clk, negedge nrst)
 	begin
 	          if (!nrst)
 	             begin
@@ -39,7 +48,7 @@ always @(posedge clk, negedge nrst)
 			word_rnd_in[1] <= key_round[1];
 			word_rnd_in[2] <= key_round[2];
 			word_rnd_in[3] <= key_round[3];
-		end
+		end*/
 
 assign Sub_o =( word_rnd_in[3] << 8); // sub bye from s box 
 
@@ -51,8 +60,16 @@ word_rnd_out[2] = word_rnd_in[2] ^ word_rnd_out[1];
 word_rnd_out[3] = word_rnd_in[3] ^ word_rnd_out[2];
 
 end
+/* key_gen pipeline*/
+  aes_pipeline key_gen_pipe_2 (
+    .clk(clk),
+    .nrst(nrst),
+    .en(en),
+    .input_i(word_rnd_out),
+    .output_o(key_o)
+);
 
-always @(posedge clk, negedge nrst)
+/*always @(posedge clk, negedge nrst)
 	begin
 	          if (!nrst)
 	             begin
@@ -67,4 +84,5 @@ always @(posedge clk, negedge nrst)
 			key_o[2] <= word_rnd_out[2];
 			key_o[3] <= word_rnd_out[3];
 		end
+*/
 endmodule
