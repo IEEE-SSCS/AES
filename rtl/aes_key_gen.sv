@@ -4,43 +4,32 @@ module aes_key_gen
 
 input logic clk,nrst ,en ,gen_key,next_rnd,
 input logic [9:0] r_con_ctrl,rcon_i,
-input logic [0:3][31:0] key_i,
-input logic [31:0] Sub_i,
-output logic [31:0] Sub_o,
-output logic [0:3][31:0] key_o
+input  aes_pkg:: key_128 key_i,
+input  aes_pkg::aes_word Sub_i,
+output aes_pkg:: aes_word Sub_o,
+output aes_pkg:: key_128 key_o
 
 );
 
 //const logic [9:0] rcon_i = '{ 8'h01, 8'h02, 8'h04, 8'h08, 8'h10,8'h20, 8'h40, 8'h80, 8'h1B, 8'h36 };
-logic [0:3][31:0] word_rnd_in;
-logic [0:3][31:0] word_rnd_out;
-logic [0:3][31:0] key_round;
+aes_pkg:: key_128 word_rnd_in;
+aes_pkg:: key_128 word_rnd_out;
+aes_pkg:: key_128 key_round;
 logic [9:0] rcon_o; 
 
 
-always_comb begin //first mux so we will use it's out
-        unique case(gen_key)
-            0: rcon_o  = rcon_i;
-            1: rcon_o  = r_con_ctrl;
-           
-            default: rcon_o = rcon_i;
-        endcase
-end
-always_comb //secound mux so we will use it's out
-begin
-        unique case(next_rnd)
-            0: key_round  = key_i;
-            1: key_round  = key_o;
-           
-            default: key_round = key_i;
-        endcase
-end
+
+//Muxs
+//first mux so we will use it's out
+assign rcon_o  = gen_key ? r_con_ctrl : rcon_i;
+//secound mux so we will use it's out
+assign key_round  = next_rnd ? key_o : key_i;
 
 always @(posedge clk, negedge nrst)
 	begin
 	          if (!nrst)
 	             begin
-                         word_rnd_in[0] <= 0;	
+                        word_rnd_in[0] <= 0;	
 			word_rnd_in[1] <= 0;
 			word_rnd_in[2] <= 0;
 		 	word_rnd_in[3] <= 0;
