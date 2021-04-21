@@ -2,7 +2,7 @@ module aes_key_gen
 //import aes_pkg::key_128;
  (
 
-input logic clk,nrst,en,gen_key,next_rnd,
+input logic clk,nrst ,en ,gen_key,next_rnd,
 input logic [9:0] r_con_ctrl,rcon_i,
 input [0:3][31:0] key_i,
 input logic [31:0] Sub_i,
@@ -36,7 +36,21 @@ begin
         endcase
 end
 
-aes_pipeline word_rnd_in_pipe (.clk(clk),.nrst(nrst),.en(en),.input_i(key_round),.output_o(word_rnd_in));
+always @(posedge clk, negedge nrst)
+	begin
+	          if (!nrst)
+	             begin
+                         word_rnd_in[0] <= 0;	
+			word_rnd_in[1] <= 0;
+			word_rnd_in[2] <= 0;
+		 	word_rnd_in[3] <= 0;
+                       end
+                 else
+			word_rnd_in[0] <= key_round[0];	
+			word_rnd_in[1] <= key_round[1];
+			word_rnd_in[2] <= key_round[2];
+			word_rnd_in[3] <= key_round[3];
+		end
 
 assign Sub_o =( word_rnd_in[3] << 8); // sub bye from s box 
 
@@ -44,25 +58,21 @@ always_comb
 begin
 word_rnd_out[0] = word_rnd_in[0] ^ (rcon_o^Sub_i);
 word_rnd_out[1] = word_rnd_in[1] ^ word_rnd_out[0];
-word_rnd_out[2] = word_rnd_in[2] ^ word_rnd_out[1];
-word_rnd_out[3] = word_rnd_in[3] ^ word_rnd_out[2];
 end
 
-aes_pipeline o_key_pipe (.clk(clk),.nrst(nrst),.en(en),.input_i(word_rnd_out),.output_o(key_o));
-
+always @(posedge clk, negedge nrst)
+	begin
+	          if (!nrst)
+	             begin
+                        key_o[0] <= 0;	
+			key_o[1] <= 0;
+			key_o[2] <= 0;
+		 	key_o[3] <= 0;
+                       end
+                 else
+			key_o[0] <= word_rnd_out[0];	
+			key_o[1] <= word_rnd_out[1];
+			key_o[2] <= word_rnd_out[2];
+			key_o[3] <= word_rnd_out[3];
+		end
 endmodule
-module aes_pipeline(
-    input clk, nrst, en, 
-    input aes_pkg::aes_128 input_i,
-    
-    output aes_pkg::aes_128 output_o
-);
-
-    always @(posedge clk, negedge nrst) begin
-        if (!nrst) output_o <= 128'h0;
-        else begin
-            if(en) output_o <= input_i;
-            else output_o <= output_o;
-        end
-    end
- endmodule   
