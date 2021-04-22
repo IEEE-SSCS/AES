@@ -116,7 +116,7 @@ nsrt=1;#10
 next_rnd=0;
 gen_key=0;
 key_i=128'h
-r_con_i=8'h01 ;#10
+r_con_i=32'h01000000 ;#10
 //2nd clock cycle 
 sub_i=32'h ;#10
 
@@ -172,14 +172,14 @@ sub_i=32'h ;#10
 //rnd_9
 //1st clk cycle 
 next_rnd=1;
-r_con_i=8'h1B;#10 
+r_con_i=32'h1B000000;#10 
 //2st clk cycle
 sub_i=32'h ;#10
 
 //rnd_10 
 //1st clk cycle 
 next_rnd=1;
-r_con_i=8'h36;#10 
+r_con_i=32'h36000000;#10 
 //2st clk cycle
 sub_i=32'h ;#10
 
