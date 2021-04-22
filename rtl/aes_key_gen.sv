@@ -88,46 +88,42 @@ end
 */
 endmodule
 
-module aes_key_gen_TB();
+module aes_key_gen_TB;
+logic clk,nrst ,en ,gen_key,next_rnd;
+ aes_pkg:: ByteType r_con_ctrl,rcon_i;
+  aes_pkg:: key_128 key_i;
+  aes_pkg::aes_word Sub_i;
+ aes_pkg:: aes_word Sub_o;
+ aes_pkg:: key_128 key_o;
 
-aes_key_gen DUT(.clk(clk),.nsrt(nsrt),.en(en),.gen_key(gen_key),.next_rnd(next_rnd)
+aes_key_gen DUT(.clk(clk),.nrst(nrst),.en(en),.gen_key(gen_key),.next_rnd(next_rnd)
                 ,.r_con_ctrl(r_con_ctrl),.rcon_i(rcon_i)
                 ,.key_i(key_i),.Sub_i(Sub_i),.Sub_o(Sub_o),.key_o(key_o));
 
-input logic clk,nrst ,en ,gen_key,next_rnd;
-input logic [9:0] r_con_ctrl,rcon_i;
-input  aes_pkg:: key_128 key_i;
-input  aes_pkg::aes_word Sub_i;
-output aes_pkg:: aes_word Sub_o;
-output aes_pkg:: key_128 key_o;
+always #10 clk=~clk;
 
-intial
+
+initial
 begin
-forever 
-  begin
-    clk=1;#5
-    clk=0;#5
-  end
 en=1;
-nsrt=0;#10
-nsrt=1;#10
-
+#10 nrst=0;
+#10 nrst=1;
 //rnd_1 
 //1st clk cycle 
 next_rnd=0;
 gen_key=0;
-key_i=128'h
-r_con_i=8'h01 ;#10
+key_i=128'h4;
+rcon_i[0]=8'h01 ;#10
 //2nd clock cycle 
-sub_i=32'h ;#10
+Sub_i=32'h4 ;#10
 
 //rnd_2 
 //1st clk cycle 
 next_rnd=1;
-r_con_i=r_con_i*2;#10 //for first 8 rounds r_con_i+1=r_con_i*2
+rcon_i[1]=8'h02; //for first 8 rounds r_con_i+1=r_con_i*2
 //2st clk cycle
-sub_i=32'h ;#10
-
+//Sub_i=32'h3 ;
+/*
 //rnd_3 
 //1st clk cycle 
 next_rnd=1;
@@ -183,5 +179,7 @@ next_rnd=1;
 r_con_i=8'h36;#10 
 //2st clk cycle
 sub_i=32'h ;#10
+*/
 
 end
+endmodule
