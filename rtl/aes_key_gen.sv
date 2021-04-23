@@ -2,7 +2,8 @@ module aes_key_gen
 //import aes_pkg::key_128;
  (
 
-input logic clk,nrst ,en ,gen_key,next_rnd,rnd_number,
+input logic clk,nrst ,en ,gen_key,next_rnd,
+input int rnd_number,
 input  aes_pkg:: ByteType r_con_ctrl,//rcon_i,
 input  aes_pkg:: aes_128 key_i,
 input  aes_pkg::aes_word Sub_i,
@@ -40,15 +41,12 @@ assign Sub_o =( word_rnd_in[3] << 8); // sub bye from s box
 
 always_comb
 begin
-if (!nrst)
- i=0;
-else if(i<10) 
+ if(rnd_number<10) 
 begin
-word_rnd_out[0] = word_rnd_in[0] ^ (rcon_o[i]^Sub_i);
+word_rnd_out[0] = word_rnd_in[0] ^ (rcon_o[rnd_number]^Sub_i);
 word_rnd_out[1] = word_rnd_in[1] ^ word_rnd_out[0];
 word_rnd_out[2] = word_rnd_in[2] ^ word_rnd_out[1];
 word_rnd_out[3] = word_rnd_in[3] ^ word_rnd_out[2];
-i=i+1;
 end
 else begin
 word_rnd_out[0] = word_rnd_out[0];
