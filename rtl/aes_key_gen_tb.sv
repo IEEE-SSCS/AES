@@ -23,25 +23,22 @@ en=1;
 //rnd_1 
 //1st clk cycle 
 #10 next_rnd=0;
+#10 Sub_i=32'h5c ;
 gen_key=0;
 key_i=128'h4c5d2f00 ;
-//i=0 ;#10
-//2nd clock cycle 
+
+
 #10 Sub_i=32'h5c ;
 
 //rnd_2 
 //1st clk cycle 
 #1000 next_rnd=1;
-//i=1; //for first 8 rounds rcon_i+1=rcon_i*2
-//2st clk cycle
+
+
 Sub_i=32'h3d ;
 
 
-//rnd_3 
-//1st clk cycle 
-//next_rnd=1;
-//rcon_i=rcon_i*2;#10 
-//2st clk cycle
+
 #100 Sub_i=32'h5 ;
 #100 Sub_i=32'h6 ;
 #100 Sub_i=32'h6 ;

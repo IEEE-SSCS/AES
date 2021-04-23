@@ -34,28 +34,14 @@ assign key_round  = next_rnd ? key_o : key_i;
     .output_o(word_rnd_in)
 );
 
-/*always @(posedge clk, negedge nrst)
-	begin
-	          if (!nrst)
-	             begin
-                        word_rnd_in[0] <= 0;	
-			word_rnd_in[1] <= 0;
-			word_rnd_in[2] <= 0;
-		 	word_rnd_in[3] <= 0;
-                       end
-                 else
-			word_rnd_in[0] <= key_round[0];	
-			word_rnd_in[1] <= key_round[1];
-			word_rnd_in[2] <= key_round[2];
-			word_rnd_in[3] <= key_round[3];
-		end*/
+
 
 assign Sub_o =( word_rnd_in[3] << 8); // sub bye from s box 
 
 always_comb
 if (!nrst)
  i=0;
-else 
+else if(i<11) 
 begin
 word_rnd_out[0] = word_rnd_in[0] ^ (rcon_o[i]^Sub_i);
 word_rnd_out[1] = word_rnd_in[1] ^ word_rnd_out[0];
@@ -72,21 +58,7 @@ end
     .output_o(key_o)
 );
 
-/*always @(posedge clk, negedge nrst)
-	begin
-	          if (!nrst)
-	             begin
-                        key_o[0] <= 0;	
-			key_o[1] <= 0;
-			key_o[2] <= 0;
-		 	key_o[3] <= 0;
-                       end
-                 else
-			key_o[0] <= word_rnd_out[0];	
-			key_o[1] <= word_rnd_out[1];
-			key_o[2] <= word_rnd_out[2];
-			key_o[3] <= word_rnd_out[3];
-		end
-*/
+
+
 endmodule
 
