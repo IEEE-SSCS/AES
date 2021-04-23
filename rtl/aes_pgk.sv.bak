@@ -105,7 +105,7 @@ package aes_pkg;
         aes_byte out;
         out[0] = in[0] ^ in[1] ^ in[3] ^ in[5] ^ in[6];
         out[1] = in[4] ^ in[7];
-        out[2] = in[1] ^ in[3] ^ in[5] ^ in[6];
+        out[2] = in[1] ^ in[3] ^ in[5] ^ in[7];
         out[3] = in[1] ^ in[3];
         out[4] = in[1] ^ in[5] ^ in[7];
         out[5] = in[1] ^ in[2] ^ in[3] ^ in[5] ^ in[6];
