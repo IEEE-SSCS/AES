@@ -3,7 +3,7 @@ module aes_key_gen
  (
 
 input logic clk,nrst ,en ,gen_key,next_rnd,rnd_number,
-input  aes_pkg:: ByteType r_con_ctrl,rcon_i,
+input  aes_pkg:: ByteType r_con_ctrl,//rcon_i,
 input  aes_pkg:: key_128 key_i,
 input  aes_pkg::aes_word Sub_i,
 output aes_pkg:: aes_word Sub_o,
@@ -11,12 +11,12 @@ output aes_pkg:: key_128 key_o
 
 );
 
-//const aes_pkg:: ByteType = '{ 8'h01, 8'h02, 8'h04, 8'h08, 8'h10,8'h20, 8'h40, 8'h80, 8'h1B, 8'h36 };
+const aes_pkg:: ByteType rcon_i = '{ 8'h01, 8'h02, 8'h04, 8'h08, 8'h10,8'h20, 8'h40, 8'h80, 8'h1B, 8'h36 };
 aes_pkg:: key_128 word_rnd_in;
 aes_pkg:: key_128 word_rnd_out;
 aes_pkg:: key_128 key_round;
 aes_pkg:: ByteType rcon_o; 
-logic [3:0] i =0;
+int i ;
 
 
 //Muxs
@@ -53,13 +53,15 @@ assign key_round  = next_rnd ? key_o : key_i;
 assign Sub_o =( word_rnd_in[3] << 8); // sub bye from s box 
 
 always_comb
+if (!nrst)
+ i=0;
+else 
 begin
-i=i+1;
 word_rnd_out[0] = word_rnd_in[0] ^ (rcon_o[i]^Sub_i);
 word_rnd_out[1] = word_rnd_in[1] ^ word_rnd_out[0];
 word_rnd_out[2] = word_rnd_in[2] ^ word_rnd_out[1];
 word_rnd_out[3] = word_rnd_in[3] ^ word_rnd_out[2];
-
+i=i+1;
 end
 /* key_gen pipeline*/
   aes_pipeline key_gen_pipe_2 (
@@ -88,96 +90,3 @@ end
 */
 endmodule
 
-module aes_key_gen_TB;
-logic clk,nrst ,en ,gen_key,next_rnd;
- aes_pkg:: ByteType r_con_ctrl,rcon_i;
-  aes_pkg:: key_128 key_i;
-  aes_pkg::aes_word Sub_i;
- aes_pkg:: aes_word Sub_o;
- aes_pkg:: key_128 key_o;
-
-aes_key_gen DUT(.clk(clk),.nrst(nrst),.en(en),.gen_key(gen_key),.next_rnd(next_rnd)
-                ,.r_con_ctrl(r_con_ctrl),.rcon_i(rcon_i)
-                ,.key_i(key_i),.Sub_i(Sub_i),.Sub_o(Sub_o),.key_o(key_o));
-
-always #10 clk=~clk;
-
-
-initial
-begin
-en=1;
-#10 nrst=0;
-#10 nrst=1;
-//rnd_1 
-//1st clk cycle 
-next_rnd=0;
-gen_key=0;
-key_i=128'h4;
-rcon_i[0]=8'h01 ;#10
-//2nd clock cycle 
-Sub_i=32'h0 ;#10
-
-//rnd_2 
-//1st clk cycle 
-next_rnd=1;
-rcon_i[1]=8'h02; //for first 8 rounds rcon_i+1=rcon_i*2
-//2st clk cycle
-Sub_i=32'h0 ;
-
-//rnd_3 
-//1st clk cycle 
-next_rnd=1;
-rcon_i=rcon_i*2;#10 
-//2st clk cycle
-Sub_i=32'h0 ;#10
-
-//rnd_4 
-//1st clk cycle 
-next_rnd=1;
-rcon_i=rcon_i*2;#10 
-//2st clk cycle
-Sub_i=32'h0 ;#10
-
-//rnd_5 
-//1st clk cycle 
-next_rnd=1;
-rcon_i=rcon_i*2;#10 
-//2st clk cycle
-Sub_i=32'h0 ;#10
-
-//rnd_6 
-//1st clk cycle 
-next_rnd=1;
-rcon_i=rcon_i*2;#10 
-//2st clk cycle
-Sub_i=32'h0 ;#10
-
-//rnd_7 
-//1st clk cycle 
-next_rnd=1;
-rcon_i=rcon_i*2;#10 
-//2st clk cycle
-Sub_i=32'h0 ;#10
-
-//rnd_8 
-//1st clk cycle 
-next_rnd=1;
-rcon_i=rcon_i*2;#10 
-//2st clk cycle
-Sub_i=32'h0 ;#10
-
-//rnd_9
-//1st clk cycle 
-next_rnd=1;
-rcon_i=8'h1B;#10 
-//2st clk cycle
-Sub_i=32'h0 ;#10
-
-//rnd_10 
-//1st clk cycle 
-next_rnd=1;
-rcon_i=8'h36;#10 
-//2st clk cycle
-Sub_i=32'h0 ;#10
-end
-endmodule
