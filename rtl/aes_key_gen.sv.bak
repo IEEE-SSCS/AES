@@ -115,69 +115,69 @@ gen_key=0;
 key_i=128'h4;
 rcon_i[0]=8'h01 ;#10
 //2nd clock cycle 
-Sub_i=32'h0 ;#10
+Sub_i=32'h4 ;#10
 
 //rnd_2 
 //1st clk cycle 
 next_rnd=1;
 rcon_i[1]=8'h02; //for first 8 rounds rcon_i+1=rcon_i*2
 //2st clk cycle
-Sub_i=32'h0 ;
+Sub_i=32'h3 ;
 
 //rnd_3 
 //1st clk cycle 
 next_rnd=1;
 rcon_i=rcon_i*2;#10 
 //2st clk cycle
-Sub_i=32'h0 ;#10
+Sub_i=32'h ;#10
 
 //rnd_4 
 //1st clk cycle 
 next_rnd=1;
 rcon_i=rcon_i*2;#10 
 //2st clk cycle
-Sub_i=32'h0 ;#10
+Sub_i=32'h ;#10
 
 //rnd_5 
 //1st clk cycle 
 next_rnd=1;
 rcon_i=rcon_i*2;#10 
 //2st clk cycle
-Sub_i=32'h0 ;#10
+Sub_i=32'h ;#10
 
 //rnd_6 
 //1st clk cycle 
 next_rnd=1;
 rcon_i=rcon_i*2;#10 
 //2st clk cycle
-Sub_i=32'h0 ;#10
+Sub_i=32'h ;#10
 
 //rnd_7 
 //1st clk cycle 
 next_rnd=1;
 rcon_i=rcon_i*2;#10 
 //2st clk cycle
-Sub_i=32'h0 ;#10
+Sub_i=32'h ;#10
 
 //rnd_8 
 //1st clk cycle 
 next_rnd=1;
 rcon_i=rcon_i*2;#10 
 //2st clk cycle
-Sub_i=32'h0 ;#10
+Sub_i=32'h ;#10
 
 //rnd_9
 //1st clk cycle 
 next_rnd=1;
 rcon_i=8'h1B;#10 
 //2st clk cycle
-Sub_i=32'h0 ;#10
+Sub_i=32'h ;#10
 
 //rnd_10 
 //1st clk cycle 
 next_rnd=1;
 rcon_i=8'h36;#10 
 //2st clk cycle
-Sub_i=32'h0 ;#10
+Sub_i=32'h ;#10
 end
 endmodule
