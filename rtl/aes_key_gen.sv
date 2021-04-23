@@ -39,6 +39,7 @@ assign key_round  = next_rnd ? key_o : key_i;
 assign Sub_o =( word_rnd_in[3] << 8); // sub bye from s box 
 
 always_comb
+begin
 if (!nrst)
  i=0;
 else if(i<11) 
@@ -48,6 +49,7 @@ word_rnd_out[1] = word_rnd_in[1] ^ word_rnd_out[0];
 word_rnd_out[2] = word_rnd_in[2] ^ word_rnd_out[1];
 word_rnd_out[3] = word_rnd_in[3] ^ word_rnd_out[2];
 i=i+1;
+end
 end
 /* key_gen pipeline*/
   aes_pipeline key_gen_pipe_2 (
