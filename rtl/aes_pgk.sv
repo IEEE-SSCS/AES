@@ -6,7 +6,7 @@ package aes_pkg;
     typedef logic [0:23][7:0] aes_192;
     typedef logic [0:31][7:0] aes_256;
     typedef logic [0:3][7:0]  aes_32;
-    typedef logic [0:3][31:0] key_128;
+    typedef logic [3:0][31:0] key_128;
     typedef logic [31:0] aes_word ;
     typedef logic [7:0] ByteType [0:9];
 
