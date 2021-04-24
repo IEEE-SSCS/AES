@@ -8,7 +8,7 @@ package aes_pkg;
     typedef logic [0:3][7:0]  aes_32;
     typedef logic [3:0][31:0] key_128;
     typedef logic [31:0] aes_word ;
-    typedef logic [7:0] ByteType [0:9];
+    typedef logic [0:7] ByteType [0:9];
 
     typedef logic [7:0] aes_byte;
     typedef logic [3:0] aes_nibble;
