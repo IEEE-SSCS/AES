@@ -26,7 +26,7 @@ assign rcon_o  = gen_key ? r_con_ctrl : rcon_i;
 //secound mux so we will use it's out
 assign key_round  = next_rnd ? key_o : key_i;
 
-/* key_gen pipeline*/
+/* key_gen pipeline
   aes_pipeline key_gen_pipe_1 (
     .clk(clk),
     .nrst(nrst),
@@ -35,7 +35,8 @@ assign key_round  = next_rnd ? key_o : key_i;
     .output_o(word_rnd_in)
 );
 
-
+*/
+assign word_rnd_in=key_round;
 
 assign Sub_o =( word_rnd_in[3] << 8); // sub bye from s box 
 
