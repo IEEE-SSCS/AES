@@ -17,7 +17,7 @@ aes_pkg:: key_128 word_rnd_in;
 aes_pkg:: key_128 word_rnd_out;
 aes_pkg:: aes_128 key_round;
 aes_pkg:: ByteType rcon_o; 
-int i ;
+//int i ;
 
 
 //Muxs
