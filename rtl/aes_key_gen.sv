@@ -4,7 +4,7 @@ module aes_key_gen
 input logic clk,nrst ,en ,gen_key,next_rnd,
 input  aes_pkg:: aes_byte r_con_ctrl,r_con_i,
 input  aes_pkg:: aes_128 key_i,
-input  aes_pkg::aes_word Sub_i,
+input  aes_pkg:: aes_word Sub_i,
 output aes_pkg:: aes_word Sub_o,
 output aes_pkg:: aes_128 key_o
 
@@ -25,17 +25,16 @@ assign key_round  = next_rnd ? key_o : key_i;
 
 assign word_rnd_in=key_round;
 
-assign Sub_o =( word_rnd_in[3] << 8); // sub bye from s box 
+assign Sub_o =( word_rnd_in[3] << 8); // sub byte from s box 
 
 always_comb
-
-
 begin
-word_rnd_out[0] = word_rnd_in[0] ^ (rcon_o^Sub_i);
+word_rnd_out[0] = word_rnd_in[0] ^ (rcon_o^Sub_i);//rcon from ctrl&sub_i from s_box
 word_rnd_out[1] = word_rnd_in[1] ^ word_rnd_out[0];
 word_rnd_out[2] = word_rnd_in[2] ^ word_rnd_out[1];
 word_rnd_out[3] = word_rnd_in[3] ^ word_rnd_out[2];
 end
+
 
 /* key_gen pipeline*/
   aes_pipeline key_gen_pipe (
