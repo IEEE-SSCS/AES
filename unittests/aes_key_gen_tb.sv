@@ -4,8 +4,8 @@ logic clk,nrst ,en ,gen_key,next_rnd;
 
   aes_pkg:: aes_byte r_con_ctrl,r_con_i;
   aes_pkg:: aes_128 key_i;
-  aes_pkg::aes_word Sub_i;
-  aes_pkg:: aes_word Sub_o;
+  aes_pkg::aes_32 Sub_i;
+  aes_pkg:: aes_32 Sub_o;
   aes_pkg:: aes_128 key_o;
 
 
