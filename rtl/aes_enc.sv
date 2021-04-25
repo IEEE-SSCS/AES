@@ -56,6 +56,6 @@ module aes_enc
   );
 
   // output to next round
-  assign round_o = add_key;
+  assign round_o = cipher_o;
 
 endmodule
