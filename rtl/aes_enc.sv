@@ -11,7 +11,7 @@ module aes_enc(
     aes_pkg::aes_128 shifted_rows_o;       // output from shift rows operation
     aes_pkg::aes_128 shifted_rows_o_q;     // output from pipe 1
     aes_pkg::aes_128 mixcols_o;            // output from mixcols
-    aes_pkh::aes_128 mixcols_o_q;          // output from pipe 1
+    aes_pkg::aes_128 mixcols_o_q;          // output from pipe 1
 
     aes_pkg::aes_128 muxed_initial_final;  // output plain_text or shifted rows 
     aes_pkg::aes_128 muxed_final_rnd;      // output shifted rows if final round
