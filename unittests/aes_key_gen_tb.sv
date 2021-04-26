@@ -26,36 +26,36 @@ en=1;
 //1st cycle 
  next_rnd=0;
 key_i=128'h328c4fe405b593bc2010628c937b61e3
- ;
+ ;#100
 r_con_i=8'h01;
 sub_i=32'hee3dbf60;
 gen_key=0;
 #100
-next_rnd=1;
+next_rnd=1;#100
 r_con_i=8'h02;
 sub_i=32'h77dc66b3;
-#100
+#200
 r_con_i=8'h04;
 sub_i=32'h34622654;
-#100
+#200
 r_con_i=8'h08;
 sub_i=32'h20751700;
-#100
+#200
 r_con_i=8'h10;
 sub_i=32'hde9addb5;
-#100
+#200
 r_con_i=8'h20;
 sub_i=32'h4f06a5dc;
-#100
+#200
 r_con_i=8'h40;
 sub_i=32'h37b92a5f;
-#100
+#200
 r_con_i=8'h80;
 sub_i=32'h61e25ec1;
-#100
+#200
 r_con_i=8'h1b;
 sub_i=32'h54ddc3db;
-#100
+#200
 r_con_i=8'h36;
 sub_i=32'h6d947139;
  end
