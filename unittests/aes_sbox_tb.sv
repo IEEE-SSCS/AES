@@ -1,10 +1,11 @@
 module aes_sbox_tb();
+    timeunit 1ns;
 
- aes_pkg:: aes_128 in;
- aes_pkg:: aes_32 key_in;
- logic key_gen;
- aes_pkg:: aes_128 out;
- aes_pkg:: aes_32 key_out;
+    aes_pkg::aes_128 in;
+    aes_pkg::aes_32 key_in;
+    logic key_gen;
+    aes_pkg::aes_128 out;
+    aes_pkg::aes_32 key_out;
 
 aes_sbox dut(.in(in),.key_in(key_in),.key_gen(key_gen),.out(out),.key_out(key_out));
 int sbox_lut [16][16] = '{
@@ -28,22 +29,24 @@ int sbox_lut [16][16] = '{
 
 
 initial begin
-key_gen=0;
-for(int k=0;k<16;k++)
- begin
-  for(logic [4:0]i=4'h0;i<16;i++)
-   begin
-    for(logic [4:0]j=4'h0;j<16;j++)
-     begin
-      in[k]={ i[3:0],j[3:0] };
-      #100
-      if (sbox_lut[i][j] == out[k])begin
-       //$display("the index :%d  %d sbox_lut=%h out= %h status : %b",i,j,sbox_lut[i][j],out[k],1'b1);
-         end
-      else
-       $display("the index :%d  %d sbox_lut=%h out= %h status : %b",i,j,sbox_lut[i][j],out[k],1'b0); 
-     end
-   end
- end 
-end
+    key_gen = 0;
+    key_in = '0;
+    for(logic [4:0]i = 4'h0; i < 16; i++) begin
+        
+        for(logic [4:0]j = 4'h0; j < 16; j++) begin
+            
+            for(int k = 0; k < 16; k++) in[k]={i[3:0], j[3:0]};
+            
+            #1
+
+            for (int k = 0; k<16; k++) begin
+                check: assert (sbox_lut[i][j] == out[k])
+                    else $error("Check failed: index :%h  %h byte number : %d sbox_lut = %h out = %h", i, j, k, sbox_lut[i][j],out[k]);
+            end
+        end
+    end
+
+    $stop;
+end 
+
 endmodule
