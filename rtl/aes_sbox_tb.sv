@@ -8,7 +8,7 @@ module aes_sbox_tb();
 
 aes_sbox dut(.in(in),.key_in(key_in),.key_gen(key_gen),.out(out),.key_out(key_out));
 int sbox_lut [16][16] = '{
-{8'h63    ,8'h7c    ,8'h77    ,8'h7b    ,8'hf2    ,8'h6b    ,8'h6f    ,8'hc5    ,8'h30    ,8'h01    ,8'h67    ,8'h2b    ,8'hfe    ,8'hd7    ,8'hab   ,8'h76},
+{8'h63    ,8'h7c    ,8'h77    ,8'h7b    ,8'hf2    ,8'h6b    ,8'h6f    ,8'hc5    ,8'h30    ,8'h01    ,8'h67    ,8'h2b    ,8'hfe    ,8'hd7    ,8'hab    ,8'h76},
 {8'hca    ,8'h82    ,8'hc9    ,8'h7d    ,8'hfa    ,8'h59    ,8'h47    ,8'hf0    ,8'had    ,8'hd4    ,8'ha2    ,8'haf    ,8'h9c    ,8'ha4    ,8'h72    ,8'hc0},
 {8'hb7    ,8'hfd    ,8'h93    ,8'h26    ,8'h36    ,8'h3f    ,8'hf7    ,8'hcc    ,8'h34    ,8'ha5    ,8'he5    ,8'hf1    ,8'h71    ,8'hd8    ,8'h31    ,8'h15},
 {8'h04    ,8'hc7    ,8'h23    ,8'hc3    ,8'h18    ,8'h96    ,8'h05    ,8'h9a    ,8'h07    ,8'h12    ,8'h80    ,8'he2    ,8'heb    ,8'h27    ,8'hb2    ,8'h75},
@@ -28,17 +28,21 @@ int sbox_lut [16][16] = '{
 
 
 initial begin
-key_gen=1;
-for(int i=0;i<16;i++)
+key_gen=0;
+for(int k=0;k<16;k++)
  begin
-  for(int j=0;j<16;j++)
+  for(logic [4:0]i=4'h0;i<16;i++)
    begin
-    key_in[0]={ i,j };
-    #100
-    if (sbox_lut[i][j] == key_out[0])
-     $display("the index :%d  %d sbox_lut=%h keyout= %h status : %b",i,j,sbox_lut[i][j],key_out[0],1'b1); 
-    else
-     $display("the index :%d  %d sbox_lut=%h keyout= %h status : %b",i,j,sbox_lut[i][j],key_out[0],1'b0); 
+    for(logic [4:0]j=4'h0;j<16;j++)
+     begin
+      in[k]={ i[3:0],j[3:0] };
+      #100
+      if (sbox_lut[i][j] == out[k])begin
+       //$display("the index :%d  %d sbox_lut=%h out= %h status : %b",i,j,sbox_lut[i][j],out[k],1'b1);
+         end
+      else
+       $display("the index :%d  %d sbox_lut=%h out= %h status : %b",i,j,sbox_lut[i][j],out[k],1'b0); 
+     end
    end
  end 
 end
