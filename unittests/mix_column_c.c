@@ -51,10 +51,10 @@ unsigned char B0, unsigned char B1, unsigned char B2, unsigned char B3)
 
     char A0,A1,A2,A3;
 
-    A0 = mul_2[B] xor mul_3[B] xor B2 xor B3;
-    A1 = B0 xor mul_2[B] xor mul_3[B] xor B3;
-    A2 = B0 xor B1 xor mul_2[B] xor mul_3[B];
-    A3 = mul_3[B] xor B1 xor B2 xor mul_2[B];
+    A0 = mul_2[B] ^ mul_3[B] ^ B2 ^ B3;
+    A1 = B0 ^ mul_2[B] ^ mul_3[B] ^ B3;
+    A2 = B0 ^ B1 ^ mul_2[B] ^ mul_3[B];
+    A3 = mul_3[B] ^ B1 ^ B2 ^ mul_2[B];
 
     return (A0,A1,A2,A3);
 }
