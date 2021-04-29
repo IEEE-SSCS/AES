@@ -3,7 +3,7 @@ module aes_enc(
     input aes_pkg::aes_128 plain_text_i, mapped_i,
     input aes_pkg::aes_128 key_i, rnd_key_i,
     // control signals
-    input logic full_enc, zero_rnd, final_rnd,
+    input logic full_enc_i, zero_rnd_i, final_rnd_i,
     output aes_pkg::aes_128 cipher_o
 );
   
@@ -46,10 +46,10 @@ module aes_enc(
     );
   /* **************************** */
 
-  assign muxed_initial_final = full_enc ? plain_text_i : shifted_rows_o_q;
-  assign muxed_final_rnd     = final_rnd? muxed_initial_final : mixcols_o_q;
-  assign muxed_rnd_key       = zero_rnd ? key_i : rnd_key_i;
-  assign round_key           = zero_rnd ? muxed_rnd_key : '0;
+  assign muxed_initial_final = full_enc_i ? plain_text_i : shifted_rows_o_q;
+  assign muxed_final_rnd     = final_rnd_i? muxed_initial_final : mixcols_o_q;
+  assign muxed_rnd_key       = zero_rnd_i ? key_i : rnd_key_i;
+  assign round_key           = zero_rnd_i ? muxed_rnd_key : '0;
 
   // add round key
   assign add_key = muxed_final_rnd ^ round_key;
