@@ -1,9 +1,9 @@
 module aes_enc(
-    input clk, nrst, en,
+    input clk, nrst, en_rnd_i,
     input aes_pkg::aes_128 plain_text_i, mapped_i,
     input aes_pkg::aes_128 key_i, rnd_key_i,
     // control signals
-    input logic full_enc_i, zero_rnd_i, final_rnd_i,
+    input logic full_enc_i, zero_rnd_i, final_rnd_i, key_sel_i,
     output aes_pkg::aes_128 cipher_o
 );
   
@@ -31,7 +31,7 @@ module aes_enc(
   aes_pipeline shift_rows_pipe_1 (
     .clk(clk),
     .nrst(nrst),
-    .en(en),
+    .en(en_rnd_i),
     .input_i(shifted_rows_o),
     .output_o(shifted_rows_o_q)
   );
@@ -40,7 +40,7 @@ module aes_enc(
     aes_pipeline mixcols_pipe_1 (
         .clk        (clk),
         .nrst       (nrst),
-        .en         (en),
+        .en         (en_rnd_i),
         .input_i    (mixcols_o),
         .output_o   (mixcols_o_q)
     );
@@ -48,7 +48,7 @@ module aes_enc(
 
   assign muxed_initial_final = full_enc_i ? plain_text_i : shifted_rows_o_q;
   assign muxed_final_rnd     = final_rnd_i? muxed_initial_final : mixcols_o_q;
-  assign muxed_rnd_key       = zero_rnd_i ? key_i : rnd_key_i;
+  assign muxed_rnd_key       = key_sel_i  ? key_i : rnd_key_i;
   assign round_key           = zero_rnd_i ? muxed_rnd_key : '0;
 
   // add round key
@@ -58,7 +58,7 @@ module aes_enc(
   aes_pipeline addkey_pipe_2 (
     .clk(clk),
     .nrst(nrst),
-    .en(en),
+    .en(en_rnd_i),
     .input_i(add_key),
     .output_o(cipher_o)
   );

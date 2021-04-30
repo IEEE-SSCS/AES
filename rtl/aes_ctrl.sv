@@ -1,9 +1,9 @@
 module aes_ctrl (
     input logic clk, nrst, start_i,
     input aes_pkg::opcode opcode_i,
-    output logic full_enc_o, zero_rnd_o, key_sel_o, final_rnd_o, // control signals to aes_enc
-    output logic key_sub_o,                                      // control signal  to S_box
-    output logic gen_key_o, r_con_ctrl_o, next_rnd_o,            // control signals to key_gen
+    output logic full_enc_o, zero_rnd_o, key_sel_o, final_rnd_o, en_rnd_o, // control signals to aes_enc
+    output logic key_sub_o,                                                // control signal  to S_box
+    output logic gen_key_o, r_con_ctrl_o, next_rnd_o, en_key_o,            // control signals to key_gen
     output logic cipher_ready_o, key_ready_o
 );
 
@@ -43,6 +43,8 @@ module aes_ctrl (
                   next_rnd_o     = 0;
                   gen_key_o      = 0;
                   key_sub_o      = 0;
+                  en_rnd_o       = 1;
+                  en_key_o       = 1;
                   if (start_i)
                     begin
                       unique case (opcode_i)
@@ -50,6 +52,7 @@ module aes_ctrl (
                         
                         aes_pkg::AESENC, aes_pkg::AESENCLAST:
                           begin
+                            en_key_o    = 0; // disable aes_enc module piplines
                             full_enc_o  = 1;
                             final_rnd_o = 1;
                             zero_rnd_o  = 0;
@@ -61,6 +64,7 @@ module aes_ctrl (
                           
                         aes_pkg::AESKEYGENASSIST:
                           begin
+                            en_rnd_o    = 0; // disable key_gen module piplines
                             next_rnd_o  = 0;
                             gen_key_o   = 0;
                             key_sub_o   = 1;
