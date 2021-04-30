@@ -58,13 +58,19 @@ module aes_ctrl (
                             gen_key_o   = 0;
                             next_state  = s_box;
                           end
-                        /*
-                        AESENCFULL:
-                          
-                        AESKEYGENASSIST:
                         
-                        default:
-                        */
+                        //AESENCFULL:
+                          
+                        aes_pkg::AESKEYGENASSIST:
+                          begin
+                            next_rnd_o  = 0;
+                            gen_key_o   = 0;
+                            key_sub_o   = 1;
+                            next_state  = round;
+                          end
+                        
+                        //default:
+                        
                       endcase
                     end
                   else
@@ -82,9 +88,7 @@ module aes_ctrl (
                             next_state  = round;
                           end
                         /*
-                        AESENCFULL:
-                          
-                        AESKEYGENASSIST:
+                        AESENCFULL: 
                         
                         default:
                         */
@@ -102,20 +106,46 @@ module aes_ctrl (
                             key_sel_o   = 0;
                             next_state  = finish;
                           end
-                        /*
-                        AESENCFULL:
                           
-                        AESKEYGENASSIST:
+                        aes_pkg::AESENCLAST:
+                          begin
+                            full_enc_o  = 0;
+                            final_rnd_o = 1;
+                            zero_rnd_o  = 1;
+                            key_sel_o   = 0;
+                            next_state  = finish;
+                          end
                         
-                        default:
-                        */
+                        //AESENCFULL:
+                          
+                        aes_pkg::AESKEYGENASSIST:
+                          begin
+                            gen_key_o   = 0;
+                            next_state  = finish;
+                          end
+                        
+                        //default:
+                        
                   endcase
                 end
                 
              finish:
                 begin
-                  cipher_ready_o = 1;
+                  unique case (op_code)
+                      aes_pkg::AESKEYGENASSIST:
+                        begin
+                          key_ready_o    = 1;
+                        end
+                        
+                      default:
+                        begin
+                          cipher_ready_o = 1;
+                        end     
+                         
+                  endcase
+                  
                   next_state = start;
+                        
                 end
           endcase
         end
