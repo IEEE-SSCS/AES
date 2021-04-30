@@ -10,7 +10,7 @@ module aes_ctrl (
     assign r_con_ctrl_o[0:2] = 24'b0;
     enum {start, s_box, round, finish} next_state, current_state;
     aes_pkg::opcode op_code;
-    logic[3:0] rnd_num = 0;
+    logic[3:0] rnd_num, next_num;
 
     always_ff @(posedge clk, negedge nrst)
         begin
@@ -18,10 +18,12 @@ module aes_ctrl (
             begin
               current_state <= start;
               op_code <= aes_pkg::NOOP;
+              rnd_num <= 4'b0;
             end
           else
             begin
               current_state <= next_state;
+              rnd_num <= next_num;
               if(start_i)
                 op_code <= opcode_i;
               else
@@ -34,6 +36,7 @@ module aes_ctrl (
         begin
           // default next state and outputs
           next_state      = current_state;
+          next_num        = rnd_num;
           cipher_ready_o  = 0;
           key_ready_o     = 0;
           full_enc_o      = 1;
@@ -45,10 +48,10 @@ module aes_ctrl (
           key_sub_o       = 0;
           en_rnd_o        = 1;
           en_key_o        = 1;
-          r_con_ctrl_o[3] = 8'b1;
           unique case (current_state)
               start:
                 begin
+                  r_con_ctrl_o[3] = 8'b1;
                   if (start_i)
                     begin
                       unique case (opcode_i)
@@ -73,7 +76,7 @@ module aes_ctrl (
                           end
                         aes_pkg::AESENCFULL:
                           begin
-                            rnd_num     = 0;
+                            next_num    = 0;
                             full_enc_o  = 1;
                             final_rnd_o = 1;
                             zero_rnd_o  = 1;
@@ -99,7 +102,7 @@ module aes_ctrl (
                           end
                         aes_pkg::AESENCFULL:
                           begin
-                            rnd_num = rnd_num + 1;
+                            next_num = rnd_num + 1;
                             key_sub_o    = 0;
                             gen_key_o    = 1;
                             next_rnd_o   = 0;
