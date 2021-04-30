@@ -54,8 +54,6 @@ module aes_ctrl (
                             final_rnd_o = 1;
                             zero_rnd_o  = 0;
                             key_sel_o   = 0;
-                            next_rnd_o  = 0;
-                            gen_key_o   = 0;
                             next_state  = s_box;
                           end
                         
@@ -84,7 +82,6 @@ module aes_ctrl (
                         aes_pkg::AESENC, aes_pkg::AESENCLAST:
                           begin
                             key_sub_o   = 0;
-                            gen_key_o   = 0;
                             next_state  = round;
                           end
                         /*
@@ -103,7 +100,7 @@ module aes_ctrl (
                             full_enc_o  = 1;
                             final_rnd_o = 0;
                             zero_rnd_o  = 1;
-                            key_sel_o   = 0;
+                            key_sel_o   = 1;
                             next_state  = finish;
                           end
                           
