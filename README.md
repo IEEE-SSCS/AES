@@ -11,9 +11,9 @@ The core supports an additional operation AESENCFULL which perfroms the the full
 |Operation| Description|
 |---------|------------|
 |NOOP|No Operation|
-|AESENC|Encrypt Single Round|
-|AESENCLAST|Encrypt Final Round|
-|AESKEYGENASSIST|Generate Round Key|
+|[AESENC](https://www.felixcloutier.com/x86/aesenc)|Encrypt Single Round|
+|[AESENCLAST](https://www.felixcloutier.com/x86/aesenclast)|Encrypt Final Round|
+|[AESKEYGENASSIST](https://www.felixcloutier.com/x86/aeskeygenassist)|Generate Round Key|
 |AESENCFULL|Complete 10 Round Encryption|
 
 ***
