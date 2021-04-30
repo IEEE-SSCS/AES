@@ -1,9 +1,9 @@
 module aes_ctrl (
     input logic clk, nrst, start_i,
     input aes_pkg::opcode opcode_i,
-    output logic full_enc_o, zero_rnd_o, final_rnd_o, // control signals to aes_enc
-    output logic key_sub_o,                           // control signal  to S_box
-    output logic gen_key_o, r_con_ctrl_o, next_rnd_o, // control signals to key_gen
+    output logic full_enc_o, zero_rnd_o, key_sel_o, final_rnd_o, // control signals to aes_enc
+    output logic key_sub_o,                                      // control signal  to S_box
+    output logic gen_key_o, r_con_ctrl_o, next_rnd_o,            // control signals to key_gen
     output logic cipher_ready_o, key_ready_o
 );
 
@@ -34,6 +34,15 @@ module aes_ctrl (
           unique case (current_state)
               start:
                 begin
+                  cipher_ready_o = 0;
+                  key_ready_o    = 0;
+                  full_enc_o     = 1;
+                  final_rnd_o    = 1;
+                  zero_rnd_o     = 0;
+                  key_sel_o      = 0;
+                  next_rnd_o     = 0;
+                  gen_key_o      = 0;
+                  key_sub_o      = 0;
                   if (start_i)
                     begin
                       unique case (opcode_i)
@@ -44,6 +53,9 @@ module aes_ctrl (
                             full_enc_o  = 1;
                             final_rnd_o = 1;
                             zero_rnd_o  = 0;
+                            key_sel_o   = 0;
+                            next_rnd_o  = 0;
+                            gen_key_o   = 0;
                             next_state  = s_box;
                           end
                         /*
@@ -65,7 +77,8 @@ module aes_ctrl (
                   unique case (op_code)
                         aes_pkg::AESENC, aes_pkg::AESENCLAST:
                           begin
-                            key_sub_o = 0;
+                            key_sub_o   = 0;
+                            gen_key_o   = 0;
                             next_state  = round;
                           end
                         /*
@@ -81,11 +94,12 @@ module aes_ctrl (
               round:
                 begin
                   unique case (op_code)
-                        aes_pkg::AESENC, aes_pkg::AESENCLAST:
+                        aes_pkg::AESENC:
                           begin
                             full_enc_o  = 1;
                             final_rnd_o = 0;
                             zero_rnd_o  = 1;
+                            key_sel_o   = 0;
                             next_state  = finish;
                           end
                         /*
