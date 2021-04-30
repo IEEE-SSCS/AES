@@ -3,12 +3,14 @@ module aes_ctrl (
     input aes_pkg::opcode opcode_i,
     output logic full_enc_o, zero_rnd_o, key_sel_o, final_rnd_o, // control signals to aes_enc
     output logic key_sub_o,                                      // control signal  to S_box
-    output logic gen_key_o, r_con_ctrl_o, next_rnd_o,            // control signals to key_gen
-    output logic cipher_ready_o, key_ready_o
+    output logic gen_key_o, next_rnd_o,            // control signals to key_gen
+    output logic cipher_ready_o, key_ready_o,
+    output aes_pkg::aes_32 r_con_ctrl_o 
 );
-
+    assign r_con_ctrl_o[0:2] = 24'b0;
     enum {start, s_box, round, finish} next_state, current_state;
     aes_pkg::opcode op_code;
+    logic[3:0] rnd_num = 0;
     
     always_ff @(posedge clk, negedge nrst)
         begin
@@ -43,6 +45,7 @@ module aes_ctrl (
                   next_rnd_o     = 0;
                   gen_key_o      = 0;
                   key_sub_o      = 0;
+                  r_con_ctrl_o[3] = 8'b1;  
                   if (start_i)
                     begin
                       unique case (opcode_i)
@@ -55,10 +58,7 @@ module aes_ctrl (
                             zero_rnd_o  = 0;
                             key_sel_o   = 0;
                             next_state  = s_box;
-                          end
-                        
-                        //AESENCFULL:
-                          
+                          end   
                         aes_pkg::AESKEYGENASSIST:
                           begin
                             next_rnd_o  = 0;
@@ -66,9 +66,17 @@ module aes_ctrl (
                             key_sub_o   = 1;
                             next_state  = round;
                           end
-                        
-                        //default:
-                        
+                        aes_pkg::AESENCFULL:
+                          begin
+                            rnd_num     = 0;
+                            full_enc_o  = 1;
+                            final_rnd_o = 1;
+                            zero_rnd_o  = 1;
+                            key_sel_o   = 1;
+                            next_rnd_o  = 0;
+                            key_sub_o   = 1;
+                            next_state  = s_box;   
+                          end
                       endcase
                     end
                   else
@@ -83,12 +91,19 @@ module aes_ctrl (
                           begin
                             key_sub_o   = 0;
                             next_state  = round;
+                          end 
+                        aes_pkg::AESENCFULL:
+                          begin
+                            rnd_num = rnd_num + 1;
+                            key_sub_o    = 0;
+                            gen_key_o    = 1;
+                            next_rnd_o   = 0;
+                            next_state   = round;
                           end
-                        /*
-                        AESENCFULL: 
-                        
+                        /*  
                         default:
                         */
+
                   endcase 
                 end
             
@@ -112,17 +127,36 @@ module aes_ctrl (
                             key_sel_o   = 0;
                             next_state  = finish;
                           end
-                        
-                        //AESENCFULL:
-                          
                         aes_pkg::AESKEYGENASSIST:
                           begin
                             gen_key_o   = 0;
                             next_state  = finish;
                           end
-                        
-                        //default:
-                        
+                        aes_pkg::AESENCFULL:
+                          begin
+                            full_enc_o  = 0;
+                            zero_rnd_o  = 1;
+                            key_sel_o   = 0;
+                            key_sub_o   = 1;
+                            next_rnd_o  = 1;
+
+                            if (r_con_ctrl_o[3] == 8'h80) begin
+                              r_con_ctrl_o[3] = 8'h1b ;
+                            end 
+                            else 
+                              begin
+                                r_con_ctrl_o[3] = r_con_ctrl_o[3] << 1;
+                              end
+                            
+                            if (rnd_num == 4'b1010) begin    //check the last round
+                              final_rnd_o = 1;
+                              next_state  = finish;
+                            end 
+                            else begin
+                              final_rnd_o = 0;
+                              next_state  = s_box;
+                            end
+                          end
                   endcase
                 end
                 
