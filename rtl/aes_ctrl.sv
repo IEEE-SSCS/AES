@@ -7,10 +7,10 @@ module aes_ctrl (
     output logic cipher_ready_o, key_ready_o,
     output aes_pkg::aes_32 r_con_ctrl_o
 );
-    assign r_con_ctrl_o[0:2] = 24'b0;
     enum {start, s_box, round, finish} next_state, current_state;
     aes_pkg::opcode op_code;
     logic[3:0] rnd_num, next_num;
+    aes_pkg::aes_byte r_con_temp;
 
     always_ff @(posedge clk, negedge nrst)
         begin
@@ -19,11 +19,15 @@ module aes_ctrl (
               current_state <= start;
               op_code <= aes_pkg::NOOP;
               rnd_num <= 4'b0;
+              r_con_ctrl_o [3] <= 8'h01;
+              r_con_ctrl_o[0:2] <= 24'b0;
+
             end
           else
             begin
               current_state <= next_state;
               rnd_num <= next_num;
+              r_con_ctrl_o [3] <= r_con_temp;
               if(start_i)
                 op_code <= opcode_i;
               else
@@ -37,6 +41,7 @@ module aes_ctrl (
           // default next state and outputs
           next_state      = current_state;
           next_num        = rnd_num;
+          r_con_temp      = r_con_ctrl_o[3];
           cipher_ready_o  = 0;
           key_ready_o     = 0;
           full_enc_o      = 1;
@@ -51,7 +56,6 @@ module aes_ctrl (
           unique case (current_state)
               start:
                 begin
-                  r_con_ctrl_o[3] = 8'b1;
                   if (start_i)
                     begin
                       unique case (opcode_i)
@@ -77,6 +81,7 @@ module aes_ctrl (
                         aes_pkg::AESENCFULL:
                           begin
                             next_num    = 0;
+                            r_con_temp  = 8'h01;
                             full_enc_o  = 1;
                             final_rnd_o = 1;
                             zero_rnd_o  = 1;
@@ -148,12 +153,12 @@ module aes_ctrl (
                             key_sub_o   = 1;
                             next_rnd_o  = 1;
 
-                            if (r_con_ctrl_o[3] == 8'h80) begin
-                              r_con_ctrl_o[3] = 8'h1b ;
+                            if (r_con_temp == 8'h80) begin
+                              r_con_temp = 8'h1b ;
                             end
                             else
                               begin
-                                r_con_ctrl_o[3] = r_con_ctrl_o[3] << 1;
+                                r_con_temp = r_con_temp << 1;
                               end
 
                             if (rnd_num == 4'b1010) begin    //check the last round
