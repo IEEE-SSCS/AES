@@ -4,14 +4,16 @@ module aes_ctrl (
     output logic full_enc_o, zero_rnd_o, key_sel_o, final_rnd_o, en_rnd_o, // control signals to aes_enc
     output logic key_sub_o, en_key_o,                                      // control signal  to S_box
     output logic gen_key_o, next_rnd_o,                                    // control signals to key_gen
-    output logic cipher_ready_o, key_ready_o,
+    output logic cipher_ready_o, key_ready_o, busy_o,
     output aes_pkg::aes_32 r_con_ctrl_o
 );
+
     enum {start, s_box, round, finish} next_state, current_state;
     aes_pkg::opcode op_code;
     logic[3:0] rnd_num, next_num;
     aes_pkg::aes_byte r_con_temp;
-
+    
+    // Flip Flops (states - counter - opcode value - round constant)
     always_ff @(posedge clk, negedge nrst)
         begin
           if(!nrst)
@@ -31,14 +33,14 @@ module aes_ctrl (
               if(start_i)
                 op_code <= opcode_i;
               else
-                op_code <= aes_pkg::NOOP;
+                op_code <= op_code;
             end
         end
 
-    // next_state logic and set outputs
+    // next_state logic and setting outputs
     always_comb
         begin
-          // default next state and outputs
+          // default next state and outputs values
           next_state      = current_state;
           next_num        = rnd_num;
           r_con_temp      = r_con_ctrl_o[3];
@@ -53,6 +55,7 @@ module aes_ctrl (
           key_sub_o       = 0;
           en_rnd_o        = 1;
           en_key_o        = 1;
+          busy_o          = 1;
           unique case (current_state)
               start:
                 begin
@@ -93,7 +96,10 @@ module aes_ctrl (
                       endcase
                     end
                   else
-                    next_state = current_state;
+                    begin
+                        busy_o = 0;
+                        next_state = current_state;
+                    end
                 end
 
 
@@ -107,15 +113,12 @@ module aes_ctrl (
                           end
                         aes_pkg::AESENCFULL:
                           begin
-                            next_num = rnd_num + 1;
+                            next_num     = rnd_num + 1;
                             key_sub_o    = 0;
                             gen_key_o    = 1;
                             next_rnd_o   = 0;
                             next_state   = round;
                           end
-                        /*
-                        default:
-                        */
 
                   endcase
                 end
@@ -175,6 +178,7 @@ module aes_ctrl (
 
              finish:
                 begin
+                  busy_o = 0;
                   unique case (op_code)
                       aes_pkg::AESKEYGENASSIST:
                         begin
@@ -189,7 +193,6 @@ module aes_ctrl (
                   endcase
 
                   next_state = start;
-
                 end
              default: next_state = start;
           endcase
