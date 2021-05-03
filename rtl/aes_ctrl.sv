@@ -8,7 +8,11 @@ module aes_ctrl (
     output aes_pkg::aes_32 r_con_ctrl_o
 );
 
-    enum {start, s_box, round, finish} next_state, current_state;
+    enum logic [1:0] {start  = 2'b00,
+                      s_box  = 2'b01,
+                      round  = 2'b11,
+                      finish = 2'b10} next_state, current_state;
+                      
     aes_pkg::opcode op_code;
     logic[3:0] rnd_num, next_num;
     aes_pkg::aes_byte r_con_temp;
