@@ -160,14 +160,6 @@ module aes_ctrl (
                             key_sub_o   = 1;
                             next_rnd_o  = 1;
 
-                            if (r_con_temp == 8'h80) begin
-                              r_con_temp = 8'h1b ;
-                            end
-                            else
-                              begin
-                                r_con_temp = r_con_temp << 1;
-                              end
-
                             if (rnd_num == 4'b1010) begin    //check the last round
                               final_rnd_o = 1;
                               next_state  = finish;
@@ -175,6 +167,7 @@ module aes_ctrl (
                             else begin
                               final_rnd_o = 0;
                               next_state  = s_box;
+                              r_con_temp = r_con_temp == 8'h80 ? 8'h1b : r_con_temp << 1;
                             end
                           end
                   endcase
