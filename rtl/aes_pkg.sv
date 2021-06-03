@@ -3,9 +3,11 @@ package aes_pkg;
         AESDEC, AESDECLAST, AESIMC} opcode;
 
     typedef logic [0:15][7:0] aes_128;
-    typedef logic [0:23][7:0] aes_192;
-    typedef logic [0:31][7:0] aes_256;
     typedef logic [0:3][7:0]  aes_32;
+
+    typedef logic [0:3][31:0] key_128;
+    typedef logic [0:5][31:0] key_192;
+    typedef logic [0:7][31:0] key_256; 
 
     typedef logic [7:0] aes_byte;
     typedef logic [3:0] aes_nibble;
@@ -91,9 +93,9 @@ package aes_pkg;
         aes_byte out;
         out[0] = in[0] ^ in[2];
         out[1] = in[1] ^ in[6] ^ in[7];
-        out[2] = in[2] ^ in[3] ^ in[5] ^ in[7];
-        out[3] = in[2] ^ in[5];
-        out[4] = in[1] ^ in[3] ^ in[6] ^ in[7];
+        out[2] = in[2] ^ in[5];
+        out[3] = in[1] ^ in[3] ^ in[6] ^ in[7];
+        out[4] = in[1] ^ in[5] ^ in[7];
         out[5] = in[1] ^ in[4] ^ in[5] ^ in[6];
         out[6] = in[1] ^ in[2] ^ in[3] ^ in[4] ^ in[5] ^ in[6];
         out[7] = in[5] ^ in[7];
@@ -104,7 +106,7 @@ package aes_pkg;
         aes_byte out;
         out[0] = in[0] ^ in[1] ^ in[3] ^ in[5] ^ in[6];
         out[1] = in[4] ^ in[7];
-        out[2] = in[1] ^ in[3] ^ in[5] ^ in[7];
+        out[2] = in[1] ^ in[3] ^ in[5] ^ in[6];
         out[3] = in[1] ^ in[3];
         out[4] = in[1] ^ in[5] ^ in[7];
         out[5] = in[1] ^ in[2] ^ in[3] ^ in[5] ^ in[6];
@@ -145,5 +147,26 @@ package aes_pkg;
         out[7] = in[1] ^ in[4] ^ in[6];
         return out;
     endfunction : inv_affine
+    
+    function automatic aes_128 shift_rows(aes_128 in);
+      aes_128 out;
+      out[0]  = in[0];
+      out[1]  = in[5];
+      out[2]  = in[10];
+      out[3]  = in[15];
+      out[4]  = in[4];
+      out[5]  = in[9];
+      out[6]  = in[14];
+      out[7]  = in[3];
+      out[8]  = in[8];
+      out[9]  = in[13];
+      out[10] = in[2];
+      out[11] = in[7];
+      out[12] = in[12];
+      out[13] = in[1];
+      out[14] = in[6];
+      out[15] = in[11]; 
+      return out;
+    endfunction : shift_rows
 
 endpackage : aes_pkg

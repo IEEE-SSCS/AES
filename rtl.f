@@ -1,0 +1,15 @@
+rtl/aes_pkg.sv
+rtl/aes_ctrl.sv
+rtl/aes_enc.sv
+rtl/aes_key_gen.sv
+rtl/aes_mix_column.sv
+rtl/aes_mix_single_column.sv
+rtl/aes_mul_gf4.sv
+rtl/aes_mul_inv.sv
+rtl/aes_pipeline.sv
+rtl/aes_pipeline_32.sv
+rtl/aes_sbox.sv
+rtl/aes_sbox_lut.sv
+rtl/aes_sub_byte.sv
+rtl/aes_sub_byte_lut.sv
+rtl/aes_top.sv
