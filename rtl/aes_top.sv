@@ -18,7 +18,7 @@ module aes_top(
 
 //control wires
 //control singals for aes_key_gen
-    aes_pkg::aes_byte r_con_ctrl;
+    aes_pkg::aes_32 r_con_ctrl;
     logic gen_key_ctrl;
     logic next_rnd_ctrl;
     logic en_key_o;

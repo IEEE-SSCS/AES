@@ -1,7 +1,8 @@
 module aes_key_gen (
 
 input logic clk,nrst ,en ,gen_key,next_rnd,
-input  aes_pkg:: aes_byte r_con_ctrl,r_con_i,
+input  aes_pkg:: aes_32 r_con_ctrl,
+input  aes_pkg:: aes_byte r_con_i,
 input  aes_pkg:: aes_128 key_i,
 input  aes_pkg:: aes_32 sub_i,
 output aes_pkg:: aes_32 sub_o,
