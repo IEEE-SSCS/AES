@@ -1,5 +1,5 @@
 module aes_top(
-    logic clk, nrst,
+    input logic clk, nrst,
 //control out signals
     input  aes_pkg::opcode opcode_i,
     input  logic start_i,
