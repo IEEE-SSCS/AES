@@ -1,4 +1,4 @@
-class AES_TEST;
+class AES_test;
     
     
     
