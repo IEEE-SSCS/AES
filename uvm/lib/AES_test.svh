@@ -16,9 +16,7 @@ class AES_test extends uvm_test;
         AES_sequence aes_seq;
 
         phase.raise_objection(.obj(this));
-            aes_seq = simpleadder_sequence::type_id::create(.name("sa_seq"), .contxt(get_full_name()));
-            assert(aes_seq.randomize());
-            aes_seq.start(aes_env.sa_agent.sa_seqr);
+            
         phase.drop_objection(.obj(this));
     endtask: run_phase
 endclass: AES_test
