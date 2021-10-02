@@ -5,6 +5,7 @@ class AES_agent extends uvm_agent;
     uvm_analysis_port#(AES_transaction) agent_ap_before;
     uvm_analysis_port#(AES_transaction) agent_ap_after;
     
+    
     AES_sequencer		aes_seqr;
     AES_driver		aes_drvr;
     AES_monitor_before	aes_mon_before;
