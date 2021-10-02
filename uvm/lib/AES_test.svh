@@ -16,7 +16,8 @@ class AES_test extends uvm_test;
         AES_sequence aes_seq;
 
         phase.raise_objection(.obj(this));
-            
+        aes_seq = AES_sequence::type_id::create(.name("aes_seq"));
+
         phase.drop_objection(.obj(this));
     endtask: run_phase
 endclass: AES_test
