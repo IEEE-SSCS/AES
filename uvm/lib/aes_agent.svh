@@ -1,15 +1,15 @@
-class AES_agent extends uvm_agent;  
+class aes_agent extends uvm_agent;  
         
-    `uvm_component_utils(AES_agent)
+    `uvm_component_utils(aes_agent)
         
-    uvm_analysis_port#(AES_transaction) agent_ap_before;
-    uvm_analysis_port#(AES_transaction) agent_ap_after;
+    uvm_analysis_port#(aes_transaction) agent_ap_before;
+    uvm_analysis_port#(aes_transaction) agent_ap_after;
     
     
-    AES_sequencer		aes_seqr;
-    AES_driver		aes_drvr;
-    AES_monitor_before	aes_mon_before;
-    AES_monitor_after	aes_mon_after;
+    aes_sequencer		aes_seqr;
+    aes_driver		aes_drvr;
+    aes_monitor_before	aes_mon_before;
+    aes_monitor_after	aes_mon_after;
         
     function new(string name, uvm_component parent);
         super.new(name, parent);
@@ -21,10 +21,10 @@ class AES_agent extends uvm_agent;
         agent_ap_before	= new(.name("agent_ap_before"), .parent(this));
         agent_ap_after	= new(.name("agent_ap_after"), .parent(this));
         
-        aes_seqr		= AES_sequencer::type_id::create(.name("aes_seqr"), .parent(this));
-        aes_drvr		= AES_driver::type_id::create(.name("aes_drvr"), .parent(this));
-        aes_mon_before	= AES_monitor_before::type_id::create(.name("aes_mon_before"), .parent(this));
-        aes_mon_after	= AES_monitor_after::type_id::create(.name("aes_mon_after"), .parent(this));
+        aes_seqr		= aes_sequencer::type_id::create(.name("aes_seqr"), .parent(this));
+        aes_drvr		= aes_driver::type_id::create(.name("aes_drvr"), .parent(this));
+        aes_mon_before	= aes_monitor_before::type_id::create(.name("aes_mon_before"), .parent(this));
+        aes_mon_after	= aes_monitor_after::type_id::create(.name("aes_mon_after"), .parent(this));
     endfunction: build_phase
         
     function void connect_phase(uvm_phase phase);
@@ -35,4 +35,4 @@ class AES_agent extends uvm_agent;
         aes_mon_after.mon_ap_after.connect(agent_ap_after);
     endfunction: connect_phase
         
-endclass: AES_agent
+endclass: aes_agent
