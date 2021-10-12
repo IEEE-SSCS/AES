@@ -43,7 +43,7 @@ class scoreboard extends uvm_subscriber  #(aes_transaction);
          $display(" %d\n %h\n %h\n %h",c,k[c],pt[c],ct[c]);
          end
    endfunction
-	function void read_file_mmt(string location,bit[127:0] ct[int],pt[int],k[int],i[int]);
+	function void read_file_mmt(string location,bit[1279:0] ct[int],pt[int],k[int],i[int]);
       int c,fd,m;
 	c=0;	
       fd = $fopen(location,"r");
