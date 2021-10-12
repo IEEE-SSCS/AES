@@ -27,11 +27,11 @@ class scoreboard extends uvm_subscriber  #(aes_transaction);
 	export_after.connect(after_fifo.analysis_export);
     endfunction:connect_phase
 
-   parameter N=99;
+   parameter N=127;
    bit[127:0] ct_mc[99:0],pt_mc[99:0],k_mc[99:0];
    bit[127:0] ct_mm[9:0],pt_mm[9:0],k_mm[9:0];
    //function to scan the test vectors
-   function void read_file(string location,bit[127:0] ct[int],pt[int],k[int]);
+	function void read_file(string location,bit[N:0] ct[int],pt[int],k[int]);
       int c,fd,m;
       fd = $fopen(location,"r");
        while(!$feof(fd))
@@ -75,7 +75,7 @@ function  predict_result(aes_transaction cmd);
       end
        else
        begin
-          read_file_mmt("ECBMMT128.txt",ct_mmt,pt_mmt,k_mmt,l);
+	       read_file#(N=1279)("ECBMMT128.txt",ct_mmt,pt_mmt,k_mmt,l);
                for (int i =0;i<10;i++ ) begin
                   if (cmd.plain_text_i==pt_mmt[i][127:0]&&cmd.key_i==k_mmt)
                    begin
