@@ -7,7 +7,7 @@ class aes_transaction extends uvm_sequence_item;
 	 //rand logic nrst;
 
 	 //control out signals
-  	 rand  aes_pkg::opcode opcode_i;
+  	 //rand  aes_pkg::opcode opcode_i;
   	 //rand  logic start_i;
     	 logic key_ready_o;
     	 logic cipher_ready_o;
