@@ -4,7 +4,7 @@ import uvm_pkg::*;
 
 
 import aes_pkg::*;
-import pkg::*;
+import pkg_main::*;
 `include "aes_if.sv"
 
 
@@ -34,7 +34,7 @@ module top;
 
 	initial begin
 		uvm_config_db #(virtual aes_if)::set(null,"*","vif",vif);
-		run_test();//start the test
+		run_test("aes_test");//start the test
 		end
 
 	
