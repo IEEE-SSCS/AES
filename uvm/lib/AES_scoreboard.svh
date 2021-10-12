@@ -43,16 +43,18 @@ class scoreboard extends uvm_subscriber  #(aes_transaction);
          $display(" %d\n %h\n %h\n %h",c,k[c],pt[c],ct[c]);
          end
    endfunction
-	function void read_file_mmt(string location,bit[127:0] ct[int],pt[int],k[int]);
+	function void read_file_mmt(string location,bit[127:0] ct[int],pt[int],k[int],i[int]);
       int c,fd,m;
+	c=0;	
       fd = $fopen(location,"r");
        while(!$feof(fd))
          begin
-          m=$fscanf(fd,"COUNT = %d\n",c);
+		 m=$fscanf(fd,"COUNT = %d\n",i[c]);
           m=$fscanf(fd,"KEY = %h\n",k[c]);
           m=$fscanf(fd,"PLAINTEXT = %h\n",pt[c]);
           m=$fscanf(fd,"CIPHERTEXT = %h\n\n",ct[c]);
          $display(" %d\n %h\n %h\n %h",c,k[c],pt[c],ct[c]);
+	c++;	 
          end
    endfunction
 //function to extract the result from the test vectors
