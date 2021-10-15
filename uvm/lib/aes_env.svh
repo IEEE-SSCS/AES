@@ -16,7 +16,7 @@ class aes_env extends uvm_env;
 
 	function void connect_phase(uvm_phase phase);
 		super.connect_phase(phase);
-		agent.agent_ap_before.connect(aes_sb.sb_export_before);
-		agent.agent_ap_after.connect(aes_sb.sb_export_after);
+		agent.agent_ap_before.connect(aes_sb.export_before);
+		agent.agent_ap_after.connect(aes_sb.export_after);
 	endfunction: connect_phase
 endclass: aes_env 
