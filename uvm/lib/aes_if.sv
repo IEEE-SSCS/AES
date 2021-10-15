@@ -1,6 +1,5 @@
 interface aes_if;
 
-
     	logic clk;
     	logic nrst;
 
@@ -24,18 +23,14 @@ interface aes_if;
 	   task set_sequence(input aes_transaction trn);
 		//translate sequences to signals
 		
-		
-		
 		start_i=1'b0;
 		nrst=1'b0;
 		forever begin
-			
-
 			@(posedge clk)
 			begin	
 				start_i=1'b1;
 				nrst=1'b1;
-				opcode_i=AESENCFULL;
+				trn.opcode_i=AESENCFULL;
 
 				opcode_i=trn.opcode_i;
 				key_ready_o=trn.key_ready_o;
@@ -55,8 +50,7 @@ interface aes_if;
 	//getters
 	 task get_sequence(output aes_transaction trn);
 		
-		
-		forever begin 
+				forever begin 
 		
 			@(posedge clk)
 			begin
