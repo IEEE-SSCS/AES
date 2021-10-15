@@ -19,7 +19,7 @@ class aes_test extends uvm_test;
         aes_seq = aes_sequence::type_id::create(.name("aes_seq"));
 
 	assert(aes_seq.randomize());
-	//seq.print();
+	aes_seq.print();
 	aes_seq.start(env.agent.aes_seqr);//start seq with seqr
 	
 
