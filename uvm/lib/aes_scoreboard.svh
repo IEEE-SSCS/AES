@@ -1,13 +1,13 @@
-`include "uvm_macros.svh"
-`include "seq item.sv"
-`include "fill.svh"
-import uvm_pkg::*;
-class scoreboard extends uvm_subscriber  #(aes_transaction);
-   `uvm_component_utils(scoreboard);
-  fill fill;
+//`include "uvm_macros.svh"
+//`include "seq item.sv"
+//`include "fill.sv"
+//import uvm_pkg::*;
+class aes_scoreboard extends uvm_subscriber #(aes_transaction);
+   `uvm_component_utils(aes_scoreboard);
+    fill f;
 
         uvm_analysis_export #(aes_transaction) export_before;
-	uvm_analysis_export #(aes_transaction) export_after;
+	uvm_analysis_export#(aes_transaction) export_after;
 
 	uvm_tlm_analysis_fifo #(aes_transaction) before_fifo;
 	uvm_tlm_analysis_fifo #(aes_transaction) after_fifo;
@@ -18,8 +18,12 @@ class scoreboard extends uvm_subscriber  #(aes_transaction);
    endfunction : new
 
    function void build_phase(uvm_phase phase);
-    before_fifo = new ("before_fifo", this);
-    after_fifo = new ("after_fifo", this);
+
+	export_before	= new("export_before", this);
+	export_after	= new("export_after", this);
+
+    	before_fifo = new ("before_fifo", this);
+    	after_fifo = new ("after_fifo", this);
    endfunction : build_phase
 
     function void connect_phase(uvm_phase phase);
@@ -28,8 +32,8 @@ class scoreboard extends uvm_subscriber  #(aes_transaction);
     endfunction:connect_phase
 
    parameter N=127;
-   bit[127:0] ct_mc[99:0],pt_mc[99:0],k_mc[99:0];
-   bit[127:0] ct_mm[9:0],pt_mm[9:0],k_mm[9:0];
+  // bit[127:0] ct_mc[99:0],pt_mc[99:0],k_mc[99:0];
+//   bit[127:0] ct_mm[9:0],pt_mm[9:0],k_mm[9:0];
    //function to scan the test vectors
 	function void read_file(string location,bit[127:0] ct[int],pt[int],k[int]);
       int c,fd,m;
@@ -43,7 +47,7 @@ class scoreboard extends uvm_subscriber  #(aes_transaction);
          $display(" %d\n %h\n %h\n %h",c,k[c],pt[c],ct[c]);
          end
    endfunction
-	function void read_file_mmt(string location,bit[1279:0] ct[int],pt[int],k[int],i[int]);
+	function void read_file_mmt(string location,bit[1279:0] ct[int], pt[int],bit[127:0] k[int],int i[9:0]);
       int c,fd,m;
 	c=0;	
       fd = $fopen(location,"r");
@@ -70,13 +74,16 @@ function  predict_result(aes_transaction cmd);
    int l[9:0];
    int s [$];
    int w [$];
-     fill.fill();
+     f.fill();
+if(after_fifo.try_get(cmd)) 
+begin
+
       if(cmd.opcode_i==AESENCFULL)
     begin
     if(cmd.key_i==0)
-    predicted=fill.katvt[cmd.plain_text_i];
+    predicted=f.katvt[cmd.plain_text_i];
 	 else if(cmd.plain_text_i==0)
-	 predicted=fill.katvk[cmd.key_i];
+	 predicted=f.katvk[cmd.key_i];
 	 else
 	 begin
 	 read_file("ECBMCT128.txt",ct_mc,pt_mc,k_mc);
@@ -138,19 +145,28 @@ function  predict_result(aes_transaction cmd);
 	 
 	 end
    end 
-
+end
+else
+	`uvm_fatal("GET CMD ","failed to get CMD");
 
 endfunction : predict_result
  
  virtual function  compare(aes_transaction kmd,bit[127:0] predicted);
 		if(kmd.cipher_o== predicted) begin
-         return 1;
+         
 			`uvm_info("compare", {"Test: OK!"}, UVM_LOW);
+			return 1;
 		end else begin
-         return 0;
+         
 			`uvm_error("compare", {"Test: Fail!"});
+			return 0;
 		end
 	endfunction: compare
 
-  endclass : scoreboard
 
+
+  virtual function void write(aes_transaction t );
+		`uvm_info("write",$sformatf("data received=0x%0h",t),UVM_MEDIUM)
+	endfunction:write
+
+  endclass : aes_scoreboard
