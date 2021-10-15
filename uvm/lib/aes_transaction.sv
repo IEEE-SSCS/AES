@@ -1,13 +1,13 @@
 
 class aes_transaction extends uvm_sequence_item;
 
-	`uvm_object_utils(aes_transaction)
+	
 	
 	 // logic clk;
 	 //rand logic nrst;
 
 	 //control out signals
-  	 //rand  aes_pkg::opcode opcode_i;
+  	 aes_pkg::opcode opcode_i;
   	 //rand  logic start_i;
     	 logic key_ready_o;
     	 logic cipher_ready_o;
@@ -21,7 +21,7 @@ class aes_transaction extends uvm_sequence_item;
 	 rand aes_pkg:: aes_128 plain_text_i;
 	 aes_pkg:: aes_128 cipher_o;
 
-
+	`uvm_object_utils(aes_transaction)
 
 //constructor
 
@@ -34,7 +34,7 @@ class aes_transaction extends uvm_sequence_item;
 	//print
 	virtual function string convert2string();
 		string s;
-		s=$sformatf("opcode_i=0x%0h  key_i=0x%0h  r_con_i=0x%0h  plain_text_i=0x%0h",opcode_i,key_i,r_con_i,plain_text_i);
+		s=$sformatf("  key_i=0x%0h  r_con_i=0x%0h  plain_text_i=0x%0h",key_i,r_con_i,plain_text_i);
 		return s;
 
 	endfunction:convert2string
@@ -49,7 +49,7 @@ class aes_transaction extends uvm_sequence_item;
 			`uvm_fatal(" fatal transaction","tried to copy wrong type")
 		super.do_copy(rhs);	//copy all data
 		
-		opcode_i=copied_transaction.opcode_i;
+		//opcode_i=copied_transaction.opcode_i;
 		key_i=copied_transaction.key_i;
 		r_con_i=copied_transaction.r_con_i;
 		plain_text_i=copied_transaction.plain_text_i;
@@ -66,7 +66,7 @@ class aes_transaction extends uvm_sequence_item;
 			res=0;
 		else
 			res=super.do_compare(rhs,comparer)&&
-				opcode_i==compared_transaction.opcode_i&&
+				//opcode_i==compared_transaction.opcode_i&&
 				key_i==compared_transaction.key_i&&
 				r_con_i==compared_transaction.r_con_i&&
 				plain_text_i==compared_transaction.plain_text_i;
