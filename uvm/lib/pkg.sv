@@ -1,4 +1,4 @@
-package pkg_main;
+package pkg;
 	
 import aes_pkg::*;
 
@@ -8,9 +8,10 @@ import aes_pkg::*;
 	`include "aes_transaction.sv"
 	`include "aes_sequence.sv"
 	`include "aes_sequencer.sv"
+	`include "aes_driver.sv"
 	`include "aes_monitor.sv"
 	//`include "aes_monitor_after.sv"
-	`include "aes_driver.sv"
+	
 	//`include "aes_agent_config.sv"
 	`include "aes_agent.sv"
 	`include "fill.sv"
@@ -23,4 +24,4 @@ import aes_pkg::*;
         
 	
 
-endpackage: pkg_main
+endpackage: pkg
