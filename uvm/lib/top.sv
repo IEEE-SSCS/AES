@@ -4,32 +4,29 @@ import uvm_pkg::*;
 
 
 import aes_pkg::*;
-import pkg_main::*;
+import pkg::*;
 `include "aes_if.sv"
 
 
 module top;
-	import aes_pkg::*;
+	//import aes_pkg::*;
 	//interface declaration
 	 aes_if vif();
 
 
 	//connects the interface to the dut
 	aes_top dut(
-		vif.clk,
-    		vif.nrst,
-	
-    		vif.opcode_i,
-		vif.start_i,
-     		vif.key_ready_o,
-     	 	vif.cipher_ready_o,
-    	 	vif.busy_o,
-
-     		vif.key_i,
-     		vif.r_con_i,
-
-     		vif.plain_text_i,
-     		vif.cipher_o
+		.clk(vif.clk),
+    		.nrst(vif.nrst),
+    		.opcode_i(vif.opcode_i),
+		.start_i(vif.start_i),
+     		.key_ready_o(vif.key_ready_o),
+     	 	.cipher_ready_o(vif.cipher_ready_o),
+    	 	.busy_o(vif.busy_o),
+     		.key_i(vif.key_i),
+     		.r_con_i(vif.r_con_i),
+     		.plain_text_i(vif.plain_text_i),
+     		.cipher_o(vif.cipher_o)
 		);
 
 	initial begin
