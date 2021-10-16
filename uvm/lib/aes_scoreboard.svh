@@ -63,6 +63,9 @@ class aes_scoreboard extends uvm_subscriber #(aes_transaction);
    endfunction
 //function to extract the result from the test vectors
 function  predict_result(aes_transaction cmd);
+   bit[127:0] ct_kat[int];
+   bit[127:0]k_kat[int];
+   bit[127:0]pt_kat[int];
    bit[127:0] ct_mc[int];
    bit[127:0]k_mc[int];
    bit[127:0]pt_mc[int];
@@ -74,25 +77,19 @@ function  predict_result(aes_transaction cmd);
    int l[9:0];
    int s [$];
    int w [$];
-     f.fill();
-if(after_fifo.try_get(cmd)) 
-begin
-
+   int a [$];
+   int b [$];
+     fill();
       if(cmd.opcode_i==AESENCFULL)
     begin
     if(cmd.key_i==0)
-    predicted=f.katvt[cmd.plain_text_i];
+    read_file("ECBVarTxt128.txt",ct_kat,pt_kat,k_kat);
+    a= pt_kat.find_index with (item==cmd.plain_text_i);
+    predicted=ct_kat[a];
 	 else if(cmd.plain_text_i==0)
-	 predicted=f.katvk[cmd.key_i];
-	 else
-	 begin
-	 read_file("ECBMCT128.txt",ct_mc,pt_mc,k_mc);
-         s= pt_mc.find_index with (item==cmd.plain_text_i);
-         w= k_mc.find_index with (item==cmd.key_i);   
-	 if(pt_mc.exists(s)&&k_mc.exists(w))
-	  begin
-     predicted=ct_mc[s];
-     compare(cmd,predicted);
+    read_file("ECBVarKey128.txt",ct_kat,pt_kat,k_kat);
+    b= pt_kat.find_index with (item==cmd.key_i);
+    predicted=ct_kat[b];
       end
        else
        begin
