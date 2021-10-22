@@ -11,8 +11,8 @@ class aes_scoreboard extends uvm_subscriber #(aes_transaction);
 
 	uvm_tlm_analysis_fifo #(aes_transaction) before_fifo;
 	uvm_tlm_analysis_fifo #(aes_transaction) after_fifo;
-
-   
+        aes_transaction transaction_before;
+	aes_transaction transaction_after;
    function new (string name, uvm_component parent);
       super.new(name, parent);
    endfunction : new
@@ -161,6 +161,14 @@ endfunction : predict_result
 	endfunction: compare
 
 
+	task run();
+		forever begin
+			before_fifo.get(transaction_before);
+			after_fifo.get(transaction_after);
+			
+			compare();
+		end
+	endtask: run
 
   virtual function void write(aes_transaction t );
 		`uvm_info("write",$sformatf("data received=0x%0h",t),UVM_MEDIUM)
