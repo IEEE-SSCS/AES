@@ -62,7 +62,7 @@ class aes_scoreboard extends uvm_subscriber #(aes_transaction);
          end
    endfunction
 //function to extract the result from the test vectors
-function  predict_result(aes_transaction cmd);
+	function  predict_result(aes_transaction cmd, bit[127:0] predicted);
    bit[127:0] ct_kat[int];
    bit[127:0]k_kat[int];
    bit[127:0]pt_kat[int];
@@ -72,8 +72,6 @@ function  predict_result(aes_transaction cmd);
    bit[1279:0] ct_mmt[int];
    bit[127:0] k_mmt[int];
    bit[1279:0] pt_mmt[int];
-   bit[127:0] predicted;
-   bit[127:0] predicted_mmt;
    int l[9:0];
    int s [$];
    int w [$];
@@ -93,50 +91,54 @@ function  predict_result(aes_transaction cmd);
       end
        else
        begin
+	   read_file("ECBMCT128.txt",ct_mc,pt_mc,k_mc);
+         s= pt_mc.find_index with (item==cmd.plain_text_i);
+         w= k_mc.find_index with (item==cmd.key_i);   
+	 if(pt_mc.exists(s)&&k_mc.exists(w))
+	  begin
+          predicted=ct_mc[s];
+	  end
+       end 
+          else begin	
 	       read_file_mmt("ECBMMT128.txt",ct_mmt,pt_mmt,k_mmt,l);
                for (int i =0;i<10;i++ ) begin
                   if (cmd.plain_text_i==pt_mmt[i][127:0]&&cmd.key_i==k_mmt)
                    begin
                   for (int j =0; j<l[i]+1; j++ ) begin
-                     int q;
-                     q=j+1;
+                    
                      if (j==0) begin
-                        predicted_mmt=ct_mmt[l[i]][127:0];   
+                        predicted=ct_mmt[l[i]][127:0];   
                      end
                      if (j==1) begin
-                        predicted_mmt=ct_mmt[l[i]][255:128];   
+                        predicted_=ct_mmt[l[i]][255:128];   
                      end
                      if (j==2) begin
-                        predicted_mmt=ct_mmt[l[i]][383:256];   
+                        predicted=ct_mmt[l[i]][383:256];   
                      end
                      if (j==3) begin
-                        predicted_mmt=ct_mmt[l[i]][511:384];   
+                        predicted=ct_mmt[l[i]][511:384];   
                      end
                      if (j==4) begin
-                        predicted_mmt=ct_mmt[l[i]][639:512];   
+                        predicted=ct_mmt[l[i]][639:512];   
                      end
                      if (j==5) begin
-                        predicted_mmt=ct_mmt[l[i]][767:640];   
+                        predicted=ct_mmt[l[i]][767:640];   
                      end
                      if (j==6) begin
-                        predicted_mmt=ct_mmt[l[i]][895:768];   
+                        predicted=ct_mmt[l[i]][895:768];   
                      end
                      if (j==7) begin
-                        predicted_mmt=ct_mmt[l[i]][1023:896];   
+                        predicted=ct_mmt[l[i]][1023:896];   
                      end
                      if (j==8) begin
-                        predicted_mmt=ct_mmt[l[i]][1151:1024];   
+                        predicted=ct_mmt[l[i]][1151:1024];   
                      end
                      if (j==9) begin
-                        predicted_mmt=ct_mmt[l[i]][1279:1152];   
+                        predicted=ct_mmt[l[i]][1279:1152];   
                      end
-
-                     if(!compare(cmd,predicted_mmt));
-                     break;
-                  end   
-                  break;
+                  end 
                   end
-                  
+               
                end
        end
 	 
@@ -152,21 +154,22 @@ endfunction : predict_result
 		if(kmd.cipher_o== predicted) begin
          
 			`uvm_info("compare", {"Test: OK!"}, UVM_LOW);
-			return 1;
+			
 		end else begin
          
 			`uvm_error("compare", {"Test: Fail!"});
-			return 0;
+			
 		end
 	endfunction: compare
 
 
 	task run();
+		bit[127:0] predicted
 		forever begin
 			before_fifo.get(transaction_before);
 			after_fifo.get(transaction_after);
-			
-			compare();
+			predict_result(transaction_before, predicted);
+			compare(transaction_after, predicted);
 		end
 	endtask: run
 
