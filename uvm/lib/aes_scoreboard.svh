@@ -165,12 +165,20 @@ endfunction : predict_result
 
 	task run();
 		bit[127:0] predicted
+		fork
+		begin
 		forever begin
 			before_fifo.get(transaction_before);
 			after_fifo.get(transaction_after);
-			predict_result(transaction_before, predicted);
-			compare(transaction_after, predicted);
-		end
+			out=predict_result(transaction_after);
+		        end
+		end//thread 1
+		begin
+			forever begin	
+			compare(transaction_before, out);
+			 end
+		end//thread2
+		join_none	
 	endtask: run
 
   virtual function void write(aes_transaction t );
