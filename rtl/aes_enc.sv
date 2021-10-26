@@ -40,7 +40,7 @@ module aes_enc(
   aes_pipeline addkey_pipe_2 (
     .clk(clk),
     .nrst(nrst),
-    .en(en_rnd_i),
+    .en(1'b1),
     .input_i(add_key),
     .output_o(cipher_o)
   );
