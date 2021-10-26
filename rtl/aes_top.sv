@@ -3,6 +3,7 @@ module aes_top(
 //control out signals
     input  aes_pkg::opcode opcode_i,
     input  logic start_i,
+    //input  logic en_i,
     output logic key_ready_o,
     output logic cipher_ready_o,
     output logic busy_o,
@@ -91,6 +92,9 @@ module aes_top(
         .key_out        (key_out)
     );
 
+    logic en_i;
+    assign en_i = start_i;
+
     aes_pipeline sbox_pipe(
         .clk            (clk),
         .nrst           (nrst),
@@ -102,7 +106,7 @@ module aes_top(
     aes_pipeline_32 sbox_pipe_32(
         .clk            (clk),
         .nrst           (nrst),
-        .en             (en_i),
+        .en             (1'b1),
         .input_i        (key_out),
         .output_o       (key_out_q)
     );
@@ -115,7 +119,7 @@ module aes_top(
         .plain_text_i   (plain_text_i),
         .mapped_i       (mapped_i),
         .key_i          (key_i),
-        .rnd_key_i   (key_o),
+        .rnd_key_i      (key_o),
         .full_enc_ctrl  (full_enc_ctrl),
         .zero_rnd_ctrl  (zero_rnd_ctrl),
         .final_rnd_ctrl (final_rnd_ctrl),
